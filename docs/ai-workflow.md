@@ -65,7 +65,7 @@ Work was split by stack and milestone (plan §10.1): a session touches either
 | S8b | [12](sessions/2026-10-11-12-frontend-fixes.md) | buffer | Frontend fixes from the review (F1, F4, F5, F7, F10) |
 | — | [13](sessions/2026-10-11-13-real-scenarios.md) | buffer | Manual tests rewritten as real team scenarios R1–R16 |
 | S9 | [14](sessions/2026-10-11-14-safari-fixes.md) | buffer | Findings from the user's own test run, fixed in Chrome and Safari |
-| S10 | [15](sessions/2026-10-12-01-overdue-docs.md) | buffer | Typed text kept when a task disappears, overdue mark, documentation check |
+| S10 | [15](sessions/2026-10-12-01-overdue-docs.md) | buffer | Typed text kept when a task disappears, overdue mark, documentation check, browser check script in the repo |
 
 - Each session ends "green" — its own checks pass — and writes a short log file
   plus one line in `HISTORY.md`. The next session starts by reading the plan and

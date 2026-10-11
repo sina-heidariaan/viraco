@@ -257,6 +257,7 @@ erDiagram
 | `backend/src/database/` | Migrations and the idempotent seed |
 | `backend/test/e2e/` | Permission tests against a real `taskboard_test` database |
 | `frontend/server.mjs` | Custom server (client IP from the socket) |
+| `frontend/scripts/` | `browser-check.mjs`: 93 checks in headless Chrome (`npm run check:browser`) |
 | `frontend/src/app/api/v1/` | The proxy to NestJS |
 | `frontend/src/app/(auth)/`, `(app)/` | Login page; signed-in shell with tasks and users pages |
 | `frontend/src/components/` | Headless UI wrappers, task board and dialogs, users screen |

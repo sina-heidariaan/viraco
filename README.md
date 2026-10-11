@@ -230,8 +230,36 @@ npm run lint        # ESLint (Next.js 16 has no `next lint`)
 npm run build       # production build
 ```
 
-The frontend has no automated UI tests (out of scope). It was checked by hand and
-with a headless-browser script for all three roles; see [Known limitations](#known-limitations).
+**Browser check** — 93 checks of the running app in headless Google Chrome, as
+owner, manager, member and a new user that gets disabled: board, filters, task
+dialogs, the TipTap editor and stored JSON, the users page, keyboard use, phone
+width, access rules seen from the browser, and no console errors. It needs
+Node 22 or newer and Google Chrome (`CHROME_PATH` if Chrome is not in the usual
+place). It needs a database whose only tasks are the 4 seeded demo tasks.
+It deletes the tasks it creates, but it leaves one disabled user («کاربر Check …»)
+per run. So run it on a throwaway database, as below, and your own data stays
+untouched; the same throwaway database can be used for several runs.
+
+```bash
+# 1. Stop your normal backend first (port 4000). Then, in terminal 2,
+#    a throwaway database (PostgreSQL running, step 4):
+docker compose exec postgres createdb -U taskboard taskboard_check
+export DATABASE_URL=postgres://taskboard:taskboard@localhost:5433/taskboard_check
+
+# 2. Schema, seed, and the backend on it — same terminal, so the export applies
+cd backend && npm run migration:run && npm run seed && npm run start:dev
+
+# 3. The frontend (terminal 3, step 8), then the check (terminal 4)
+cd frontend && npm run check:browser
+
+# 4. Afterwards: stop that backend (Ctrl+C), drop the database, `unset DATABASE_URL`,
+#    and start the backend on your own data again (step 7)
+docker compose exec postgres dropdb -U taskboard taskboard_check
+```
+
+A `DATABASE_URL` set in the shell wins over `backend/.env`. The check prints one
+PASS/FAIL line per check, `93/93 checks passed` at the end, and where the
+screenshots were saved; it exits with 1 if any check fails.
 
 ## Everyday commands
 
@@ -338,8 +366,9 @@ and the list of human decisions: **[docs/ai-workflow.md](docs/ai-workflow.md)**.
 - Dark mode.
 - A Jalali date picker: dates are *shown* in the Jalali calendar but *entered*
   with the browser's native (Gregorian) date input.
-- Automated frontend tests. The frontend is checked by `typecheck`, `lint`,
-  `build` and a headless-browser script that is not part of the repository.
+- Frontend unit and component tests. The frontend is checked by `typecheck`,
+  `lint`, `build` and the [browser check](#tests-and-checks)
+  (`npm run check:browser`), which needs Google Chrome and a freshly seeded database.
 - Docker images for the two apps. Only PostgreSQL runs in Docker Compose.
 
 **Known gaps and behaviour worth knowing:**

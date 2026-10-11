@@ -16,4 +16,4 @@
 | [2026-10-11-12](2026-10-11-12-frontend-fixes.md) | — | S8b frontend fixes F1, F4, F5, F7, F10; each probe red then green (34/34); S7 browser check 93/93, 0 console errors; typecheck, lint, build; MT-A6, B10, D7, I5, I6 | done |
 | [2026-10-11-13](2026-10-11-13-real-scenarios.md) | — | manual-testing.md rewritten as real scenarios R1–R16; user run found U1–U4 (message not shown, list indent, session wording); stopped at 50 % context | handoff |
 | [2026-10-11-14](2026-10-11-14-safari-fixes.md) | — | U1 no-change save checks the task (B), U4 Safari list lost + empty-line caret fixed, U2 not reproducible; probes red→green in Chrome and Safari; S7 93/93 on fresh DB; typecheck, lint, build | done |
-| [2026-10-12-01](2026-10-12-01-overdue-docs.md) | — | O2 typed text kept on 404, O3 overdue mark; O1/O4 documented; docs audited (11 fixes); probe 15/15, S7 93/93, typecheck, lint, build | done |
+| [2026-10-12-01](2026-10-12-01-overdue-docs.md) | — | O2 typed text kept on 404, O3 overdue mark; O1/O4 documented; docs audited (11 fixes); browser check in repo (`npm run check:browser`, 93/93 via README steps); probe 15/15, typecheck, lint, build | done |

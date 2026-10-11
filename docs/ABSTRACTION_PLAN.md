@@ -21,7 +21,8 @@ README and AI-workflow documentation.
 public registration · owner creation in the UI · password reset / change ·
 drag-and-drop between columns · pagination · real-time updates · email ·
 dark mode · Jalali date picker (dates are *displayed* in Jalali, *entered* with the
-native date input) · frontend automated tests · Docker images for the two apps
+native date input) · frontend unit/component tests (one browser check script is the
+exception, §13) · Docker images for the two apps
 (only PostgreSQL runs in Docker Compose).
 
 ## 2. Fixed repository structure
@@ -73,6 +74,7 @@ needs a change-log entry (§11).
 └── frontend/                      Next.js App Router application (own package.json + lockfile)
     ├── .env.example
     ├── server.mjs                 Custom server: sets X-Forwarded-For from the socket (§4.1)
+    ├── scripts/browser-check.mjs  93 headless-Chrome checks (`npm run check:browser`, §13)
     └── src/
         ├── proxy.ts               Redirects to /login when no auth cookie (UX only; Next 16 name for middleware)
         ├── app/
@@ -428,3 +430,4 @@ switching stacks, unless the bug blocks its own "done when".
 | 2026-10-11 | §7: TipTap 3.31 recorded; `@tiptap/extension-link` not installed | StarterKit 3 includes Link (checked with `npm view`, S6) |
 | 2026-10-11 | New folder `backend/src/common/pipes/` (`JsonDepthPipe`, global, before `ValidationPipe`); new `backend/src/config/cli-data-source.ts` for the TypeORM CLI | S7 review F3: a deeply nested body crashed class-transformer (500); F6: clear `DATABASE_URL` message in the CLI (user approved, S8a) |
 | 2026-10-12 | Frontend: overdue mark «گذشته از موعد» on cards and the detail page; the edit dialog keeps typed text when the task is gone (404); a no-change save checks the task first. No API or schema change | User decisions after the manual test run (logs 14, 15); last-save-wins and per-IP login limit kept and documented |
+| 2026-10-12 | New `frontend/scripts/browser-check.mjs` (`npm run check:browser`): the 93-check headless-Chrome run, no new dependency; README "Tests and checks" | User decision B: reviewers can repeat the browser checks |

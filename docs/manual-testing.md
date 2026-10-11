@@ -298,7 +298,7 @@ You do not need to repeat these by hand.
 | ---- | ---------- |
 | Every permission rule (owner / manager / member, 403 vs 404, last owner, disabled user's old token, stolen refresh token) | Backend e2e tests (`npm run backend:test:e2e`, 58 tests) |
 | Env checks, TipTap validator, JSON depth limit, error shape | Backend unit tests (`npm run backend:test`, 64 tests) |
-| Login, board, filters in the URL, dialogs, editor round trip, users page, all three roles, 0 console errors | Headless-browser script, 93 checks (sessions S7 and S8b) |
+| Login, board, filters in the URL, dialogs, editor round trip, users page, all three roles, 0 console errors | `npm run check:browser` in `frontend/` (93 checks; README "Tests and checks") |
 | `?next=` redirect safety, Escape in the link row, Persian 404 and error pages, unknown field errors, `BACKEND_URL` check | S8b probes (34 checks plus the start-up check) |
 | Types, lint, production build | `npm run typecheck`, `npm run lint`, `npm run build` in `frontend/` |
 
