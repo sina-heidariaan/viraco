@@ -16,6 +16,8 @@ async function bootstrap(): Promise<void> {
   // req.ip the client IP from X-Forwarded-For, which the login rate limit keys on.
   app.set('trust proxy', 'loopback');
 
+  // Above the 100 KB description limit, so that rule answers with a field error, not a 413.
+  app.useBodyParser('json', { limit: '256kb' });
   app.use(helmet());
   app.use(cookieParser());
   app.useGlobalPipes(

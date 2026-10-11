@@ -5,3 +5,4 @@
 | [2026-10-11-01](2026-10-11-01-abstraction-plan.md) | M0 | Abstraction plan, AI instructions, session log created | done |
 | [2026-10-11-02](2026-10-11-02-backend-scaffold.md) | M1 | Backend skeleton, Docker DB, initial migration, idempotent seed | done |
 | [2026-10-11-03](2026-10-11-03-auth.md) | M2 | Auth endpoints, cookies, rotation, global guards, error filter, login rate limit | done |
+| [2026-10-11-04](2026-10-11-04-users-todos.md) | M3 | Users + todos endpoints, row-level access policy, last-owner lock, TipTap validator | done |

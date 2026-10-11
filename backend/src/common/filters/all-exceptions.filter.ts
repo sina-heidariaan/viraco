@@ -38,6 +38,13 @@ export function validationExceptionFactory(errors: ValidationError[]): BadReques
   return new BadRequestException({ message: 'Validation failed', details });
 }
 
+/** http-errors convention used by body-parser: `expose` marks a message safe for clients. */
+function isExposedClientError(e: unknown): e is Error & { status: number } {
+  if (!(e instanceof Error)) return false;
+  const { status, expose } = e as Error & { status?: unknown; expose?: unknown };
+  return expose === true && typeof status === 'number' && status >= 400 && status < 500;
+}
+
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
   private readonly logger = new Logger('Exceptions');
@@ -63,6 +70,10 @@ export class AllExceptionsFilter implements ExceptionFilter {
         else message = exception.message;
         if (Array.isArray(b.details)) details = b.details as FieldError[];
       }
+    } else if (isExposedClientError(exception)) {
+      // Errors raised by Express middleware (body-parser: too large, bad charset, …).
+      status = exception.status;
+      message = exception.message;
     }
 
     if (status >= 500) {

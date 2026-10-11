@@ -399,6 +399,8 @@ switching stacks, unless the bug blocks its own "done when".
 | AS4  | Managers need an assignee list, but `GET /users` is owner-only, so `GET /users/options` returns only `{id, name}` of active users. | Small: one endpoint. |
 | AS5  | A member viewing a task they cannot access gets 404, not 403.                                | Tiny: one status code. |
 | AS6  | Owners may promote users to owner and may disable themselves unless they are the last active owner. | Small: service rule. |
+| AS7  | New-user passwords are 8–128 characters; no other complexity rule (the spec sets none). | Tiny: one DTO decorator. |
+| AS8  | Refusing to remove the last active owner and a duplicate email both return **409 Conflict**; an inactive or unknown new assignee returns 400 with a field error on `assigneeId`. | Tiny: status codes. |
 
 ## 13. Change log
 
