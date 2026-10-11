@@ -47,7 +47,7 @@ export function isHttpUrl(value: unknown): boolean {
   }
 }
 
-// TipTap's Link mark serialises target/rel/class too; the viewer forces safe values anyway.
+// TipTap 3's Link mark always serialises target/rel/class/title; the viewer forces safe values anyway.
 const MARK_ATTRS: Record<string, Record<string, AttrCheck>> = {
   bold: {},
   italic: {},
@@ -56,6 +56,7 @@ const MARK_ATTRS: Record<string, Record<string, AttrCheck>> = {
     target: (v) => v === null || v === '_blank',
     rel: (v) => v === null || typeof v === 'string',
     class: (v) => v === null,
+    title: (v) => v === null || typeof v === 'string',
   },
 };
 const REQUIRED_ATTRS: Record<string, string[]> = { heading: ['level'], link: ['href'] };

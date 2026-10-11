@@ -19,7 +19,9 @@ describe('validateTiptapDoc', () => {
         { type: 'blockquote', content: [para(text('q'))] },
       )],
       ['http and https links', doc(para(text('a', link('http://example.com')), text('b', link('https://example.com/x?y=1'))))],
-      ['a link with TipTap’s default attributes', doc(para(text('a', { type: 'link', attrs: { href: 'https://x.io', target: '_blank', rel: 'noopener noreferrer nofollow', class: null } })))],
+      // Exactly what TipTap 3's Link mark serialises (it always includes title).
+      ['a link with TipTap’s default attributes', doc(para(text('a', { type: 'link', attrs: { href: 'https://x.io', target: '_blank', rel: 'noopener noreferrer nofollow', class: null, title: null } })))],
+      ['a link with a title', doc(para(text('a', { type: 'link', attrs: { href: 'https://x.io', title: 'Docs' } })))],
     ])('%s', (_label, value) => {
       expect(validateTiptapDoc(value)).toBeNull();
     });
@@ -35,6 +37,8 @@ describe('validateTiptapDoc', () => {
       ['unknown nodes', doc({ type: 'image', attrs: { src: 'https://x.io/a.png' } })],
       ['unknown marks', doc(para(text('x', { type: 'code' })))],
       ['unknown attributes', doc({ type: 'paragraph', attrs: { style: 'color:red' } })],
+      ['a non-string link title', doc(para(text('x', { type: 'link', attrs: { href: 'https://x.io', title: 42 } })))],
+      ['unknown link attributes', doc(para(text('x', { type: 'link', attrs: { href: 'https://x.io', onclick: 'alert(1)' } })))],
       ['unknown node keys', doc({ type: 'paragraph', html: '<p>x</p>' })],
       ['heading level 4', doc({ type: 'heading', attrs: { level: 4 } })],
       ['text directly in doc', doc(text('x'))],
