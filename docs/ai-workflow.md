@@ -60,6 +60,12 @@ Work was split by stack and milestone (plan §10.1): a session touches either
 | S6 | [07](sessions/2026-10-11-07-board-users.md) | M6 | Board, filters, dialogs, editor, users page |
 | S6 fix | [08](sessions/2026-10-11-08-tiptap-link-title.md) | M6 | Backend fix found in S6 (TipTap link `title`) |
 | S7 | [09](sessions/2026-10-11-09-docs.md) | M7 | This documentation, clean-clone run, full browser check |
+| — | [10](sessions/2026-10-11-10-review-fix-plan.md) | buffer | Spec and code review, manual scenarios, fix plan F1–F11 |
+| S8a | [11](sessions/2026-10-11-11-backend-fixes.md) | buffer | Backend fixes from the review (F2, F3, F6, F8, F9, F11) |
+| S8b | [12](sessions/2026-10-11-12-frontend-fixes.md) | buffer | Frontend fixes from the review (F1, F4, F5, F7, F10) |
+| — | [13](sessions/2026-10-11-13-real-scenarios.md) | buffer | Manual tests rewritten as real team scenarios R1–R16 |
+| S9 | [14](sessions/2026-10-11-14-safari-fixes.md) | buffer | Findings from the user's own test run, fixed in Chrome and Safari |
+| S10 | [15](sessions/2026-10-12-01-overdue-docs.md) | buffer | Typed text kept when a task disappears, overdue mark, documentation check |
 
 - Each session ends "green" — its own checks pass — and writes a short log file
   plus one line in `HISTORY.md`. The next session starts by reading the plan and
@@ -102,7 +108,7 @@ proves it. In practice:
   console errors. Screens at 1280 px and 390 px wide were looked at by eye.
 - **A clean clone.** In S7 the README was followed step by step in a fresh clone
   with an empty database: install, migrate, seed (twice), start, sign in, then the
-  unit tests (48), e2e tests (49), type checks, lint and build. The four Mermaid
+  unit tests (48 at that time), e2e tests (49 at that time; now 64 and 58), type checks, lint and build. The four Mermaid
   diagrams were rendered with the Mermaid library to prove they parse.
 - **Facts, not memory.** Package versions came from `npm view` before installing.
   Next.js 16 behaviour (the `proxy.ts` rename, the missing `next lint`, the

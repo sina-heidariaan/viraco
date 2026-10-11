@@ -88,7 +88,9 @@ sed -i.bak "s|^JWT_ACCESS_SECRET=.*|JWT_ACCESS_SECRET=$SECRET|" backend/.env && 
 > backend still starts with the placeholder (by design), but it prints a
 > `WARN [Environment] JWT_ACCESS_SECRET is the example value …` line at every start.
 
-If a backend variable is missing or invalid, the backend does not start. It prints
+If `DATABASE_URL` or `JWT_ACCESS_SECRET` is missing, or any backend variable has an
+invalid value (an empty value counts as missing), the backend does not start. The
+other variables fall back to the defaults shown in `backend/.env.example`. It prints
 one line per variable, saying whether it is missing or invalid and what to set,
 and exits with code 1 (no stack trace). Example:
 
@@ -200,8 +202,8 @@ npm run backend:test
 ```
 
 **Backend e2e tests** — needs PostgreSQL running (step 4). They run against
-`taskboard_test` only: each run drops that database and rebuilds it from the
-migrations. They refuse any database whose name does not end in `_test`.
+`taskboard_test` only: each run empties that database and rebuilds it from
+the migrations. They refuse any database whose name does not end in `_test`.
 
 ```bash
 npm run backend:test:e2e
@@ -306,7 +308,7 @@ Where the spec is silent, these choices were made (plan §12):
 | AS1 | A member may edit all fields (except the assignee) of tasks assigned to them by someone else. Confirmed by the user. |
 | AS2 | Priority is `low` / `medium` / `high`; the due date is a date without a time. |
 | AS3 | Owners also have full task permissions ("full access"). |
-| AS4 | Managers need an assignee list, but `GET /users` is owner-only, so `GET /users/options` returns only `{ id, name }` of active users (owner and manager). |
+| AS4 | Managers need an assignee list, but `GET /users` is owner-only, so `GET /users/options` returns only `{ id, name }` of all active users; only the owner and managers may call it. |
 | AS5 | A member asking for a task they cannot access gets 404, not 403. |
 | AS6 | Owners may promote users to owner, and may disable themselves unless they are the last active owner. |
 | AS7 | New-user passwords are 8–128 characters; no other complexity rule. |
@@ -354,6 +356,21 @@ and the list of human decisions: **[docs/ai-workflow.md](docs/ai-workflow.md)**.
 - An unknown address shows a Persian "page not found" screen. A signed-out visitor
   is sent to the login page first, like every other page.
 - Users cannot be deleted, only disabled. This keeps task history intact.
+- **Two people editing the same task: the last save wins**, without a warning.
+  Each save sends only the changed fields, so edits of different fields both
+  survive; edits of the same field do not. A warning needs a version check in
+  the API (an `updatedAt` sent with each save and a 409 answer), which changes
+  the contract in plan §4, so it was left out.
+- **The login limit (5 per minute) counts per IP address, not per account.** In
+  an office where everyone shares one internet address, the sixth sign-in within
+  a minute is refused even with the right password. A per-account key in the
+  backend throttler would fix it.
+- Text typed in a task dialog is lost when the session ends or the account is
+  disabled before saving (no drafts). When the task itself was deleted or taken
+  away, the dialog stays open with the text and says so.
+- A task whose due date is before the viewer's today and that is not done shows
+  «گذشته از موعد». "Today" is the viewer's own calendar day. Past due dates can
+  still be entered.
 - Changing an owner's own role logs that owner out (their token version changes).
 - Expired and revoked rows in `refresh_tokens` are never cleaned up.
 - The backend has no linter; it is checked by `tsc` and its tests.

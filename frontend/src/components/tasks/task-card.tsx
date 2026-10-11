@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { ActionMenu, type MenuAction } from '@/components/ui/menu';
 import { formatDay } from '@/lib/format';
 import type { Todo } from '@/types/api';
-import { PriorityBadge, STATUS_STYLES } from './task-badges';
+import { OverdueBadge, PriorityBadge, STATUS_STYLES, isOverdue, localToday } from './task-badges';
 
 type TaskCardProps = {
   task: Todo;
@@ -56,6 +56,12 @@ export function TaskCard({ task, canDelete, onEdit, onDelete }: TaskCardProps) {
               <dt>موعد:</dt>
               <dd>
                 <time dateTime={task.dueDate}>{formatDay(task.dueDate)}</time>
+                {isOverdue(task, localToday()) && (
+                  <>
+                    {' '}
+                    <OverdueBadge />
+                  </>
+                )}
               </dd>
             </div>
           )}

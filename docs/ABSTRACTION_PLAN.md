@@ -47,14 +47,17 @@ needs a change-log entry (§11).
 ├── backend/                       NestJS application (own package.json + lockfile)
 │   ├── .env.example
 │   ├── src/
-│   │   ├── main.ts                Bootstrap: pipes, filter, cookie-parser, helmet
+│   │   ├── main.ts                Bootstrap: env check, listen
+│   │   ├── app.setup.ts           Pipes, filter, cookie-parser, helmet (shared with e2e)
 │   │   ├── app.module.ts
 │   │   ├── config/
 │   │   │   ├── env.validation.ts  Fails fast on missing/weak env at startup
-│   │   │   └── data-source.ts     One TypeORM DataSource for app AND migration CLI
+│   │   │   ├── data-source.ts     One TypeORM DataSource for app AND migration CLI
+│   │   │   └── cli-data-source.ts TypeORM CLI entry (clear DATABASE_URL message)
 │   │   ├── common/
 │   │   │   ├── decorators/        @CurrentUser, @Roles, @Public
 │   │   │   ├── guards/            AuthGuard (global), RolesGuard (global)
+│   │   │   ├── pipes/             JsonDepthPipe (global, before ValidationPipe)
 │   │   │   └── filters/           AllExceptionsFilter → one error shape (§6.4)
 │   │   ├── modules/
 │   │   │   ├── auth/              controller, service, refresh-token.entity, dto/
@@ -246,7 +249,8 @@ fields → 400.
 ### 6.3 Config
 
 All env vars are validated at startup. The app refuses to start with a missing
-variable or a JWT secret shorter than 32 characters.
+`DATABASE_URL` or `JWT_ACCESS_SECRET`, any invalid value, or a JWT secret shorter
+than 32 characters. The other variables have defaults.
 
 ### 6.4 Error shape (every non-2xx response)
 
@@ -423,3 +427,4 @@ switching stacks, unless the bug blocks its own "done when".
 | 2026-10-11 | §7: frontend dev tools listed; versions recorded. §9: `next lint` → `npm run lint` | S5 scaffold; Next 16 has no `next lint` |
 | 2026-10-11 | §7: TipTap 3.31 recorded; `@tiptap/extension-link` not installed | StarterKit 3 includes Link (checked with `npm view`, S6) |
 | 2026-10-11 | New folder `backend/src/common/pipes/` (`JsonDepthPipe`, global, before `ValidationPipe`); new `backend/src/config/cli-data-source.ts` for the TypeORM CLI | S7 review F3: a deeply nested body crashed class-transformer (500); F6: clear `DATABASE_URL` message in the CLI (user approved, S8a) |
+| 2026-10-12 | Frontend: overdue mark «گذشته از موعد» on cards and the detail page; the edit dialog keeps typed text when the task is gone (404); a no-change save checks the task first. No API or schema change | User decisions after the manual test run (logs 14, 15); last-save-wins and per-IP login limit kept and documented |

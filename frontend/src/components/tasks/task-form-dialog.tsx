@@ -39,8 +39,11 @@ type TaskFormDialogProps = {
   assignees: AssigneeList;
   onClose: () => void;
   onSaved: (task: Todo, created: boolean) => void;
-  /** The task is gone or no longer visible (404). */
-  onMissing: () => void;
+  /**
+   * The task is gone or no longer visible (404). `keepOpen`: the user changed something,
+   * so the dialog stays open with their text; otherwise it should close.
+   */
+  onMissing: (keepOpen: boolean) => void;
 };
 
 export function TaskFormDialog({ open, task, formKey, assignees, onClose, onSaved, onMissing }: TaskFormDialogProps) {
@@ -81,6 +84,9 @@ const SERVER_FIELD_MESSAGES: Record<Field, string> = {
   description: 'توضیحات قالبی دارد که پذیرفته نمی‌شود، یا بیش از ۱۰۰ کیلوبایت است.',
 };
 
+const GONE_MESSAGE =
+  'این کار دیگر وجود ندارد یا به آن دسترسی ندارید. متنی که نوشته‌اید هنوز اینجاست؛ اگر لازم دارید، پیش از بستن آن را کپی کنید.';
+
 /** Select value for "no assignee". Not a uuid, so it cannot collide with a user id. */
 const NOBODY = 'nobody';
 
@@ -91,7 +97,7 @@ type TaskFormProps = {
   setPending: (pending: boolean) => void;
   onCancel: () => void;
   onSaved: (task: Todo, created: boolean) => void;
-  onMissing: () => void;
+  onMissing: (keepOpen: boolean) => void;
 };
 
 function TaskForm({ task, assignees, pending, setPending, onCancel, onSaved, onMissing }: TaskFormProps) {
@@ -104,6 +110,7 @@ function TaskForm({ task, assignees, pending, setPending, onCancel, onSaved, onM
   const description = useRef<TiptapDoc | null>(null); // null = untouched
   const [errors, setErrors] = useState<Partial<Record<Field, string>>>({});
   const [formError, setFormError] = useState<string | null>(null);
+  const [gone, setGone] = useState(false); // the task was deleted or taken away while open
   const titleRef = useRef<HTMLInputElement>(null);
 
   const assigneeEditable = canChangeAssignee(user, task);
@@ -162,7 +169,7 @@ function TaskForm({ task, assignees, pending, setPending, onCancel, onSaved, onM
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (pending) return;
+    if (pending || gone) return;
     setFormError(null);
     if (showErrors(validate())) return;
 
@@ -176,7 +183,7 @@ function TaskForm({ task, assignees, pending, setPending, onCancel, onSaved, onM
         onCancel();
       } catch (err) {
         setPending(false);
-        if (err instanceof ApiError && err.status === 404) onMissing();
+        if (err instanceof ApiError && err.status === 404) onMissing(false);
         else setFormError(describeError(err));
       }
       return;
@@ -190,7 +197,10 @@ function TaskForm({ task, assignees, pending, setPending, onCancel, onSaved, onM
     } catch (err) {
       setPending(false);
       if (err instanceof ApiError && err.status === 404) {
-        onMissing();
+        // Keep the dialog and everything typed, so it can be copied before closing.
+        setGone(true);
+        setFormError(GONE_MESSAGE);
+        onMissing(true);
         return;
       }
       const { fields, otherError } = fieldErrors(err, SERVER_FIELD_MESSAGES);
@@ -289,7 +299,7 @@ function TaskForm({ task, assignees, pending, setPending, onCancel, onSaved, onM
         />
       </div>
       <DialogActions>
-        <Button type="submit" disabled={pending}>
+        <Button type="submit" disabled={pending || gone}>
           {pending ? 'در حال ذخیره…' : task ? 'ذخیرهٔ تغییرات' : 'ساخت کار'}
         </Button>
         <Button type="button" variant="secondary" disabled={pending} onClick={onCancel}>

@@ -10,7 +10,7 @@ import { formatDateTime, formatDay } from '@/lib/format';
 import { useApiQuery } from '@/lib/use-api-query';
 import type { Todo } from '@/types/api';
 import { DescriptionView } from './description-view';
-import { PriorityBadge, StatusBadge } from './task-badges';
+import { OverdueBadge, PriorityBadge, StatusBadge, isOverdue, localToday } from './task-badges';
 import { isUuid } from './task-filters';
 
 const LINK_CLASS =
@@ -99,7 +99,19 @@ export function TaskDetail({ id }: { id: string }) {
             <bdi dir="auto">{task.createdBy.name}</bdi>
           </Detail>
           <Detail term="موعد">
-            {task.dueDate ? <time dateTime={task.dueDate}>{formatDay(task.dueDate)}</time> : 'بدون موعد'}
+            {task.dueDate ? (
+              <>
+                <time dateTime={task.dueDate}>{formatDay(task.dueDate)}</time>
+                {isOverdue(task, localToday()) && (
+                  <>
+                    {' '}
+                    <OverdueBadge />
+                  </>
+                )}
+              </>
+            ) : (
+              'بدون موعد'
+            )}
           </Detail>
           <Detail term="آخرین تغییر">
             <time dateTime={task.updatedAt}>{formatDateTime(task.updatedAt)}</time>

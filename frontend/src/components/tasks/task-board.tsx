@@ -51,8 +51,9 @@ export function TaskBoard() {
     setForm((prev) => ({ open: true, task, key: prev.key + 1 }));
   }
 
-  function taskGone() {
-    setForm((prev) => ({ ...prev, open: false }));
+  /** `keepForm`: the edit dialog stays open so the user keeps what they typed. */
+  function taskGone(keepForm = false) {
+    if (!keepForm) setForm((prev) => ({ ...prev, open: false }));
     setRemoval((prev) => ({ ...prev, open: false }));
     setMessage(NOT_FOUND_MESSAGE);
     todos.reload();
@@ -156,7 +157,7 @@ export function TaskBoard() {
           setMessage(created ? `کار «${saved.title}» ساخته شد.` : `تغییرات کار «${saved.title}» ذخیره شد.`);
           todos.reload();
         }}
-        onMissing={taskGone}
+        onMissing={(keepOpen) => taskGone(keepOpen)}
       />
       <DeleteTaskDialog
         open={removal.open}
@@ -167,7 +168,7 @@ export function TaskBoard() {
           setMessage(`کار «${deleted.title}» حذف شد.`);
           todos.reload();
         }}
-        onMissing={taskGone}
+        onMissing={() => taskGone()}
       />
     </div>
   );

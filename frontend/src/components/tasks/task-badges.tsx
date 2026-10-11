@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { PRIORITY_LABELS, STATUS_LABELS } from '@/lib/labels';
-import type { TodoPriority, TodoStatus } from '@/types/api';
+import type { Todo, TodoPriority, TodoStatus } from '@/types/api';
 
 /** Status colour classes (plan §8.3). Always paired with the text label, never alone. */
 export const STATUS_STYLES: Record<TodoStatus, { badge: string; dot: string; edge: string }> = {
@@ -28,6 +28,21 @@ export function StatusBadge({ status }: { status: TodoStatus }) {
       {STATUS_LABELS[status]}
     </span>
   );
+}
+
+/** The viewer's own calendar day as yyyy-mm-dd; a due date has no time zone (AS2). */
+export function localToday(now = new Date()): string {
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+}
+
+/** Due before today and not done. A task due today is not overdue yet. */
+export function isOverdue(task: Pick<Todo, 'dueDate' | 'status'>, today: string): boolean {
+  return task.status !== 'done' && task.dueDate !== null && task.dueDate < today;
+}
+
+export function OverdueBadge() {
+  return <span className={clsx(BADGE, 'bg-danger-50 text-danger-800 ring-danger-200')}>گذشته از موعد</span>;
 }
 
 export function PriorityBadge({ priority }: { priority: TodoPriority }) {

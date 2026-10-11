@@ -14,7 +14,7 @@ built but that you may decide to change.
 
 ## Before you start
 
-1. Start the app (README steps 4–7) on a **fresh seed**: three users
+1. Start the app (README steps 4–8) on a **fresh seed**: three users
    (owner «مالک سیستم», manager «مدیر پروژه», member «عضو تیم») and four tasks.
 
    | Task | Created by | Assigned to | Status |
@@ -70,8 +70,8 @@ typed in the editor?
 - Step 4: the **last save wins**. The first person's title is gone. Both people
   saw «تغییرات کار «…» ذخیره شد.»
 
-**Known weakness:** nobody is warned that someone else changed the task in the
-meantime.
+**Known weakness (kept, see README "Known limitations"):** nobody is warned
+that someone else changed the task in the meantime.
 
 ## R3 — A task is deleted while someone is editing it
 
@@ -80,12 +80,15 @@ meantime.
 3. **Member:** click «ذخیرهٔ تغییرات».
 4. Repeat with another task, but in step 1 change nothing before step 3.
 
-**Expected:** in both runs the dialog closes. The member sees «این کار دیگر وجود
-ندارد یا به آن دسترسی ندارید. فهرست به‌روز شد.» above the columns and the board
-reloads without the task. A save without changes on a task that still exists
-closes the dialog with no message.
-
-**Known weakness:** the text the member typed is lost with the dialog.
+**Expected:**
+- First run: the dialog **stays open** with the typed text, shows «این کار دیگر
+  وجود ندارد یا به آن دسترسی ندارید. متنی که نوشته‌اید هنوز اینجاست؛ …», and
+  «ذخیرهٔ تغییرات» is disabled. The text can be copied. Behind the dialog the
+  board already shows «… فهرست به‌روز شد.» without the task. «انصراف» closes it.
+- Second run (nothing changed): the dialog closes, the same board message
+  appears, and the task is gone.
+- A save without changes on a task that still exists closes the dialog with no
+  message.
 
 ## R4 — A task is taken away from a member
 
@@ -114,8 +117,9 @@ more. The page does not say whether the task still exists.
   so nobody can find out from outside that an account is disabled.
 - Step 5: the member is back, with the same tasks as before.
 
-**Known weakness:** everything the member typed in step 1 is lost. There is no
-draft and no "you are being signed out" warning.
+**Known weakness (kept, see README "Known limitations"):** everything the
+member typed in step 1 is lost. There is no draft and no "you are being signed
+out" warning.
 
 ## R6 — A manager is demoted to member while signed in
 
@@ -225,14 +229,13 @@ with a thumb?
    Date & Time), reload, and compare the dates. Set it back afterwards.
 
 **Expected:**
-- Step 1: accepted. The card shows the date but no "overdue" mark.
+- Step 1: accepted (a task can be recorded late). The card and the detail page
+  show «گذشته از موعد» next to the date. Set the status to «انجام‌شده»: the
+  mark goes away. A task due **today** is not marked.
 - Step 2: shown as «۱ فروردین ۱۴۰۶». While you pick the date, the hint under the
   field shows it in the Persian calendar («به تاریخ شمسی: …»).
 - Step 3: due dates **do not move** by a day. Only "last changed" times follow the
   time zone.
-
-**Known weakness:** past due dates are allowed and overdue tasks are not
-highlighted. Decide whether your team needs that.
 
 ## R13 — A manager shares a filtered board link with a member
 
@@ -265,7 +268,8 @@ The link never shows the member another person's tasks.
 **Expected:** the sixth login is refused with «تلاش‌ها بیش از حد مجاز بود. یک دقیقه
 صبر کنید و دوباره تلاش کنید.»
 
-**Known weakness:** the limit is per IP address, not per account. In an office
+**Known weakness (kept, see README "Known limitations"):** the limit is per IP
+address, not per account. In an office
 where all staff share one internet address, the sixth colleague in a minute is
 blocked, even with the right password.
 

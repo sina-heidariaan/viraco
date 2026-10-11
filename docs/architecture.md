@@ -1,7 +1,7 @@
 # Architecture
 
 How the Task Board is built, in four pictures. Every statement here was checked
-against the code at commit `75e3b0c` (2026-10-11). The diagrams are
+against the code at commit `e0d07c4` (2026-10-12). The diagrams are
 [Mermaid](https://mermaid.js.org); GitHub renders them.
 
 The rules behind these pictures live in [ABSTRACTION_PLAN.md](ABSTRACTION_PLAN.md)
@@ -249,8 +249,8 @@ erDiagram
 
 | Folder | What it holds |
 | ------ | ------------- |
-| `backend/src/common/` | Global guards (`AuthGuard`, `RolesGuard`), decorators (`@Public`, `@Roles`, `@CurrentUser`), the error filter |
-| `backend/src/config/` | Env validation (fails fast), the one TypeORM data source |
+| `backend/src/common/` | Global guards (`AuthGuard`, `RolesGuard`), the global `JsonDepthPipe`, decorators (`@Public`, `@Roles`, `@CurrentUser`), the error filter |
+| `backend/src/config/` | Env validation (fails fast), the one TypeORM data source and its CLI entry (`cli-data-source.ts`) |
 | `backend/src/modules/auth/` | Login, refresh, logout, me; refresh-token entity |
 | `backend/src/modules/users/` | Owner-only user management, last-owner rule |
 | `backend/src/modules/todos/` | Task CRUD, `todo-access.policy.ts`, TipTap validator |
