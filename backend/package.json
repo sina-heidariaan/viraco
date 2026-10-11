@@ -17,7 +17,7 @@
     "migration:revert": "npm run typeorm -- migration:revert -d src/config/data-source.ts",
     "migration:show": "npm run typeorm -- migration:show -d src/config/data-source.ts",
     "seed": "node --env-file=.env -r ts-node/register/transpile-only src/database/seeds/seed.ts",
-    "test": "jest",
+    "test": "jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json --runInBand"
   },
   "dependencies": {

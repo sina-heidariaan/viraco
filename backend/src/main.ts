@@ -1,34 +1,15 @@
-import { Logger, ValidationPipe } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import cookieParser from 'cookie-parser';
-import helmet from 'helmet';
 import { AppModule } from './app.module';
-import { AllExceptionsFilter, validationExceptionFactory } from './common/filters/all-exceptions.filter';
+import { configureApp } from './app.setup';
 import { EnvironmentVariables } from './config/env.validation';
 
 async function bootstrap(): Promise<void> {
   // CORS stays disabled: the browser only talks to Next.js, which proxies to this API.
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-
-  // Only the Next.js proxy on this machine reaches the API. Trusting loopback makes
-  // req.ip the client IP from X-Forwarded-For, which the login rate limit keys on.
-  app.set('trust proxy', 'loopback');
-
-  // Above the 100 KB description limit, so that rule answers with a field error, not a 413.
-  app.useBodyParser('json', { limit: '256kb' });
-  app.use(helmet());
-  app.use(cookieParser());
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: true,
-      transform: true,
-      exceptionFactory: validationExceptionFactory,
-    }),
-  );
-  app.useGlobalFilters(new AllExceptionsFilter());
+  configureApp(app);
   app.enableShutdownHooks();
 
   const config = app.get(ConfigService<EnvironmentVariables, true>);

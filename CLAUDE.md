@@ -66,6 +66,8 @@ npm run backend:dev                # API on http://127.0.0.1:4000
 npm run typecheck
 npm run migration:generate -- src/database/migrations/<Name>   # after an entity change
 npm run migration:revert
+npm test                           # unit tests (in band)
+npm run test:e2e                   # e2e; needs db:up; wipes and re-migrates taskboard_test only
 ```
 
 Frontend commands are added in S5.
