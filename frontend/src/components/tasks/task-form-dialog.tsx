@@ -167,11 +167,20 @@ function TaskForm({ task, assignees, pending, setPending, onCancel, onSaved, onM
     if (showErrors(validate())) return;
 
     const body = buildBody();
-    if (!body) {
-      onCancel(); // nothing changed
+    setPending(true);
+    if (!body && task) {
+      // Nothing changed, but the task may be gone since the dialog opened; say so if it is.
+      try {
+        await api<Todo>(`/todos/${task.id}`);
+        setPending(false);
+        onCancel();
+      } catch (err) {
+        setPending(false);
+        if (err instanceof ApiError && err.status === 404) onMissing();
+        else setFormError(describeError(err));
+      }
       return;
     }
-    setPending(true);
     try {
       const saved = task
         ? await api<Todo>(`/todos/${task.id}`, { method: 'PATCH', json: body })

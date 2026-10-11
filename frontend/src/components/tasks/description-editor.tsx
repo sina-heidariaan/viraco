@@ -17,6 +17,13 @@ import { Button } from '@/components/ui/button';
 import { TASK_EXTENSIONS, isHttpUrl, normalizeDoc } from '@/lib/tiptap-extensions';
 import type { TiptapDoc } from '@/types/api';
 
+/**
+ * What the editor starts with when the description has no blocks (a new task stores
+ * `content: []`). With no block the cursor has nowhere to go, so the editor selects
+ * everything; in Safari the first key press after choosing a list then replaced the list.
+ */
+const EDITOR_START: TiptapDoc = { type: 'doc', content: [{ type: 'paragraph' }] };
+
 type DescriptionEditorProps = {
   label: string;
   initial: TiptapDoc;
@@ -40,7 +47,7 @@ export function DescriptionEditor({ label, initial, onChange, error }: Descripti
 
   const editor = useEditor({
     extensions: TASK_EXTENSIONS,
-    content: normalizeDoc(initial),
+    content: initial.content?.length ? normalizeDoc(initial) : EDITOR_START,
     immediatelyRender: false,
     editorProps: {
       attributes: {

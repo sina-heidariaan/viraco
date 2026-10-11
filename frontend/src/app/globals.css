@@ -115,6 +115,11 @@
     unicode-bidi: plaintext;
     text-align: start;
   }
+  /* An empty line has no strong character, so plaintext makes it left to right and the
+     caret jumps to the left edge, away from a list marker. Empty lines follow the page. */
+  .tiptap-content :where(p, h1, h2, h3):has(> br.ProseMirror-trailingBreak:only-child) {
+    unicode-bidi: isolate;
+  }
   .tiptap-content h1 {
     font-size: var(--text-xl);
     font-weight: 600;
