@@ -10,3 +10,4 @@
 | [2026-10-11-06](2026-10-11-06-frontend-auth.md) | M5 | Frontend scaffold, /api/v1 proxy (+ socket-IP custom server), RTL layout, tokens, login, refresh, shell; 14/14 browser checks | done |
 | [2026-10-11-07](2026-10-11-07-board-users.md) | M6 | Board + URL filters, task dialogs, TipTap editor/viewer (one extension list), users page; 68/68 browser checks for 3 roles | done |
 | [2026-10-11-08](2026-10-11-08-tiptap-link-title.md) | M6 | Backend fix: TipTap link `title` accepted by the validator; tests first, 48/48 unit, API 201 | done |
+| [2026-10-11-09](2026-10-11-09-docs.md) | M7 | README, architecture.md (4 Mermaid diagrams), ai-workflow.md, video script; clean clone reaches login; 48 unit + 49 e2e pass; 93/93 browser checks | done |
