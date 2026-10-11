@@ -1,0 +1,29 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-taskboard}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-taskboard}
+      POSTGRES_DB: ${POSTGRES_DB:-taskboard}
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT:-5433}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    configs:
+      # Runs only on the first start of an empty volume: creates the e2e test database.
+      - source: create-test-db
+        target: /docker-entrypoint-initdb.d/10-create-test-db.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+configs:
+  create-test-db:
+    content: |
+      CREATE DATABASE taskboard_test;
+
+volumes:
+  postgres-data:
