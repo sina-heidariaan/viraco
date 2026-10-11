@@ -38,8 +38,12 @@ export class EnvironmentVariables {
   @Min(1)
   REFRESH_TOKEN_TTL_DAYS: number = 7;
 
-  // Implicit conversion would turn the string "false" into true, so parse explicitly.
-  @Transform(({ value }) => value === true || value === 'true')
+  // Implicit conversion runs before @Transform and turns "false" into true,
+  // so read the raw value from the source object.
+  @Transform(({ obj, key }) => {
+    const raw: unknown = (obj as Record<string, unknown>)[key];
+    return raw === true || raw === 'true';
+  })
   @IsBoolean()
   COOKIE_SECURE: boolean = false;
 
