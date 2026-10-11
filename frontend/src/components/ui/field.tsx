@@ -8,11 +8,13 @@ type TextFieldProps = Omit<InputProps, 'className' | 'invalid'> & {
   label: string;
   /** Shown under the input and linked to it with aria-describedby. */
   error?: string;
+  /** Neutral help text under the input; replaced by the error when there is one. */
+  hint?: string;
   ref?: Ref<HTMLInputElement>;
 };
 
 /** Visible label + input + error, wired together by Headless UI's Field. */
-export function TextField({ label, error, ref, ...input }: TextFieldProps) {
+export function TextField({ label, error, hint, ref, ...input }: TextFieldProps) {
   return (
     <Field className="flex flex-col gap-1.5">
       <Label className="text-sm font-medium text-neutral-800">{label}</Label>
@@ -26,7 +28,11 @@ export function TextField({ label, error, ref, ...input }: TextFieldProps) {
         )}
         {...input}
       />
-      {error && <Description className="text-sm text-danger-700">{error}</Description>}
+      {error ? (
+        <Description className="text-sm text-danger-700">{error}</Description>
+      ) : (
+        hint && <Description className="text-sm text-neutral-600">{hint}</Description>
+      )}
     </Field>
   );
 }

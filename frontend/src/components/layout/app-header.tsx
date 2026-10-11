@@ -1,16 +1,22 @@
 'use client';
 
 import { ArrowRightStartOnRectangleIcon } from '@heroicons/react/20/solid';
+import clsx from 'clsx';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { api, describeError } from '@/lib/api-client';
 import { ROLE_LABELS } from '@/lib/labels';
+import { canManageUsers } from '@/lib/permissions';
 import type { AuthUser } from '@/types/api';
 
 export function AppHeader({ user }: { user: AuthUser }) {
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const pathname = usePathname();
+  const links = [{ href: '/tasks', label: 'کارها' }];
+  if (canManageUsers(user)) links.push({ href: '/users', label: 'کاربران' });
 
   async function logout() {
     setPending(true);
@@ -30,12 +36,36 @@ export function AppHeader({ user }: { user: AuthUser }) {
   return (
     <header className="border-b border-neutral-200 bg-white">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
-        <Link
-          href="/tasks"
-          className="shrink-0 rounded-lg text-base font-semibold text-neutral-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-600 focus-visible:ring-offset-2"
-        >
-          تخته کارها
-        </Link>
+        <div className="flex min-w-0 items-center gap-4 sm:gap-6">
+          <Link
+            href="/tasks"
+            className="hidden shrink-0 rounded-lg text-base font-semibold text-neutral-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-600 focus-visible:ring-offset-2 sm:block"
+          >
+            تخته کارها
+          </Link>
+          <nav aria-label="بخش‌ها">
+            <ul className="flex items-center gap-1">
+              {links.map((link) => {
+                const current = pathname === link.href || pathname.startsWith(`${link.href}/`);
+                return (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      aria-current={current ? 'page' : undefined}
+                      className={clsx(
+                        'inline-flex min-h-10 items-center rounded-lg px-3 text-sm font-medium transition-colors duration-150',
+                        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-600',
+                        current ? 'bg-accent-50 text-accent-800' : 'text-neutral-700 hover:bg-neutral-100',
+                      )}
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </nav>
+        </div>
         <div className="flex min-w-0 items-center gap-3">
           <p className="flex min-w-0 items-center gap-2 text-sm">
             <bdi dir="auto" className="block truncate font-medium text-neutral-900">

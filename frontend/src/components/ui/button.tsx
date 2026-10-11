@@ -3,11 +3,13 @@
 import { Button as HeadlessButton, type ButtonProps as HeadlessButtonProps } from '@headlessui/react';
 import clsx from 'clsx';
 
-type Variant = 'primary' | 'secondary';
+type Variant = 'primary' | 'secondary' | 'danger' | 'ghost';
 
 const VARIANTS: Record<Variant, string> = {
   primary: 'bg-accent-600 text-white data-hover:bg-accent-700 data-active:bg-accent-800',
   secondary: 'border border-neutral-300 bg-white text-neutral-800 data-hover:bg-neutral-100 data-active:bg-neutral-200',
+  danger: 'bg-danger-700 text-white data-hover:bg-danger-800 data-active:bg-danger-800',
+  ghost: 'text-accent-700 data-hover:bg-accent-50 data-active:bg-accent-100',
 };
 
 export type ButtonProps = Omit<HeadlessButtonProps, 'className'> & {

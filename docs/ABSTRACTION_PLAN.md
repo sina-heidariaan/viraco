@@ -280,6 +280,8 @@ Anything not listed needs approval and a change-log entry.
   Frontend: latest stable at scaffold time that supports Node 20 — Next 16.4, React 19.3,
   Tailwind 4.3, Headless UI 2.2; TypeScript 6.0 and ESLint 9 because typescript-eslint
   (inside eslint-config-next) accepts TypeScript < 6.1 and the React/import plugins ESLint ≤ 9.
+  TipTap 3.31 (`@tiptap/react`, `@tiptap/pm`, `@tiptap/starter-kit`); StarterKit 3 already contains
+  Link, so `@tiptap/extension-link` is not installed.
 
 ## 8. Frontend rules
 
@@ -418,3 +420,4 @@ switching stacks, unless the bug blocks its own "done when".
 | 2026-10-11 | §2: `frontend/src/middleware.ts` → `frontend/src/proxy.ts` | Next.js 16 renamed the convention (checked in the installed docs) |
 | 2026-10-11 | §2/§4.1: `frontend/server.mjs` custom server sets X-Forwarded-For from the socket | Next.js keeps a client-sent X-Forwarded-For, which would bypass the login rate limit (user decision, S5) |
 | 2026-10-11 | §7: frontend dev tools listed; versions recorded. §9: `next lint` → `npm run lint` | S5 scaffold; Next 16 has no `next lint` |
+| 2026-10-11 | §7: TipTap 3.31 recorded; `@tiptap/extension-link` not installed | StarterKit 3 includes Link (checked with `npm view`, S6) |
