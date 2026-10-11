@@ -7,3 +7,4 @@
 | [2026-10-11-03](2026-10-11-03-auth.md) | M2 | Auth endpoints, cookies, rotation, global guards, error filter, login rate limit | done |
 | [2026-10-11-04](2026-10-11-04-users-todos.md) | M3 | Users + todos endpoints, row-level access policy, last-owner lock, TipTap validator | done |
 | [2026-10-11-05](2026-10-11-05-backend-tests.md) | M4 | E2E (49) + unit (45) tests green; required tests proven to catch broken rules | done |
+| [2026-10-11-06](2026-10-11-06-frontend-auth.md) | M5 | Frontend scaffold, /api/v1 proxy (+ socket-IP custom server), RTL layout, tokens, login, refresh, shell; 14/14 browser checks | done |

@@ -70,4 +70,13 @@ npm test                           # unit tests (in band)
 npm run test:e2e                   # e2e; needs db:up; wipes and re-migrates taskboard_test only
 ```
 
-Frontend commands are added in S5.
+Frontend (inside `frontend/`; needs the backend running):
+
+```bash
+cp .env.example .env               # BACKEND_URL=http://127.0.0.1:4000 (server-only)
+npm install
+npm run dev                        # node server.mjs → http://127.0.0.1:3000 (never `next dev`: see server.mjs)
+npm run build && npm start         # production: node server.mjs start
+npm run typecheck                  # tsc --noEmit
+npm run lint                       # eslint (Next 16 has no `next lint`)
+```

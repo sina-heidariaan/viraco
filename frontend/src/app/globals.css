@@ -1,0 +1,99 @@
+@import 'tailwindcss';
+
+/*
+ * Design tokens (plan §8.3). Light theme only. The default palette is removed, so only
+ * these roles exist as utilities: neutral (slate), accent (indigo), danger (rose) and
+ * the three status colours (todo = slate, progress = amber, done = emerald).
+ */
+@theme {
+  --color-*: initial;
+  --color-white: #fff;
+  --color-black: #000;
+
+  --color-neutral-50: oklch(98.4% 0.003 247.858);
+  --color-neutral-100: oklch(96.8% 0.007 247.896);
+  --color-neutral-200: oklch(92.9% 0.013 255.508);
+  --color-neutral-300: oklch(86.9% 0.022 252.894);
+  --color-neutral-400: oklch(70.4% 0.04 256.788);
+  --color-neutral-500: oklch(55.4% 0.046 257.417);
+  --color-neutral-600: oklch(44.6% 0.043 257.281);
+  --color-neutral-700: oklch(37.2% 0.044 257.287);
+  --color-neutral-800: oklch(27.9% 0.041 260.031);
+  --color-neutral-900: oklch(20.8% 0.042 265.755);
+  --color-neutral-950: oklch(12.9% 0.042 264.695);
+
+  --color-accent-50: oklch(96.2% 0.018 272.314);
+  --color-accent-100: oklch(93% 0.034 272.788);
+  --color-accent-200: oklch(87% 0.065 274.039);
+  --color-accent-300: oklch(78.5% 0.115 274.713);
+  --color-accent-400: oklch(67.3% 0.182 276.935);
+  --color-accent-500: oklch(58.5% 0.233 277.117);
+  --color-accent-600: oklch(51.1% 0.262 276.966);
+  --color-accent-700: oklch(45.7% 0.24 277.023);
+  --color-accent-800: oklch(39.8% 0.195 277.366);
+  --color-accent-900: oklch(35.9% 0.144 278.697);
+  --color-accent-950: oklch(25.7% 0.09 281.288);
+
+  --color-danger-50: oklch(96.9% 0.015 12.422);
+  --color-danger-100: oklch(94.1% 0.03 12.58);
+  --color-danger-200: oklch(89.2% 0.058 10.001);
+  --color-danger-300: oklch(81% 0.117 11.638);
+  --color-danger-500: oklch(64.5% 0.246 16.439);
+  --color-danger-600: oklch(58.6% 0.253 17.585);
+  --color-danger-700: oklch(51.4% 0.222 16.935);
+  --color-danger-800: oklch(45.5% 0.188 13.697);
+
+  --color-todo-50: oklch(98.4% 0.003 247.858);
+  --color-todo-100: oklch(96.8% 0.007 247.896);
+  --color-todo-200: oklch(92.9% 0.013 255.508);
+  --color-todo-500: oklch(55.4% 0.046 257.417);
+  --color-todo-700: oklch(37.2% 0.044 257.287);
+  --color-todo-800: oklch(27.9% 0.041 260.031);
+
+  --color-progress-50: oklch(98.7% 0.022 95.277);
+  --color-progress-100: oklch(96.2% 0.059 95.617);
+  --color-progress-200: oklch(92.4% 0.12 95.746);
+  --color-progress-500: oklch(76.9% 0.188 70.08);
+  --color-progress-700: oklch(55.5% 0.163 48.998);
+  --color-progress-800: oklch(47.3% 0.137 46.201);
+
+  --color-done-50: oklch(97.9% 0.021 166.113);
+  --color-done-100: oklch(95% 0.052 163.051);
+  --color-done-200: oklch(90.5% 0.093 164.15);
+  --color-done-500: oklch(69.6% 0.17 162.48);
+  --color-done-700: oklch(50.8% 0.118 165.612);
+  --color-done-800: oklch(43.2% 0.095 166.913);
+
+  /* Persian descenders and dots need more room than Latin's default leading. */
+  --text-xs--line-height: 1.8;
+  --text-sm--line-height: 1.9;
+  --text-base--line-height: 1.9;
+}
+
+@theme inline {
+  --font-sans: var(--font-vazirmatn), ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  body {
+    /* Vazirmatn stylistic set 01: the letter forms Persian readers expect. */
+    font-feature-settings: 'ss01';
+  }
+
+  :lang(fa) {
+    line-height: 1.9;
+    /* Tracking breaks the joins of a connected script. */
+    letter-spacing: normal;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

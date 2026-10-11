@@ -69,8 +69,9 @@ needs a change-log entry (§11).
 │       └── e2e/                   Permission-boundary tests against a real test DB
 └── frontend/                      Next.js App Router application (own package.json + lockfile)
     ├── .env.example
+    ├── server.mjs                 Custom server: sets X-Forwarded-For from the socket (§4.1)
     └── src/
-        ├── middleware.ts          Redirects to /login when no auth cookie (UX only)
+        ├── proxy.ts               Redirects to /login when no auth cookie (UX only; Next 16 name for middleware)
         ├── app/
         │   ├── layout.tsx         <html lang="fa" dir="rtl">, Vazirmatn font
         │   ├── globals.css        Tailwind + design tokens (§8.3)
@@ -123,6 +124,8 @@ drift more than once.
 - `/api/v1/<path>` → `${BACKEND_URL}/<path>` for GET, POST, PATCH, DELETE.
 - Forwards: method, query string, JSON body, `Cookie`, `Content-Type`, client IP as
   `X-Forwarded-For`. Returns: status, body, and every `Set-Cookie` header.
+- The client IP is the TCP peer address, written by `server.mjs` before Next.js runs;
+  a client-sent `X-Forwarded-For` is always discarded (Next.js alone would keep it).
 - Rejects non-GET requests whose `Origin` does not match the app host (CSRF backstop).
 - Backend unreachable or slower than 10 s → 502/504 in the standard error shape.
 
@@ -268,12 +271,15 @@ Anything not listed needs approval and a change-log entry.
   `supertest`, `ts-node` (TypeORM CLI + seed), `typescript`, `@types/*`.
 - **Frontend:** `next`, `react`, `react-dom`, `tailwindcss` (v4), `@headlessui/react`,
   `@tiptap/react`, `@tiptap/pm`, `@tiptap/starter-kit`, `@tiptap/extension-link`
-  (if not already inside StarterKit), `@heroicons/react`, `clsx`.
+  (if not already inside StarterKit), `@heroicons/react`, `clsx`;
+  dev: `typescript`, `eslint`, `eslint-config-next`, `@tailwindcss/postcss`, `@types/*`.
 - **Banned:** MUI, Ant Design, any admin/UI kit, Passport (the custom guard is
   smaller), state-management libraries, ORMs other than TypeORM.
 - Versions: **NestJS 11.x, TypeORM 0.3.x, TypeScript 5.9.x** (CommonJS) for the backend —
   NestJS 12 is ESM-only and needs experimental Jest flags (user decision, 2026-10-11).
-  Frontend: latest stable at scaffold time that supports Node 20.
+  Frontend: latest stable at scaffold time that supports Node 20 — Next 16.4, React 19.3,
+  Tailwind 4.3, Headless UI 2.2; TypeScript 6.0 and ESLint 9 because typescript-eslint
+  (inside eslint-config-next) accepts TypeScript < 6.1 and the React/import plugins ESLint ≤ 9.
 
 ## 8. Frontend rules
 
@@ -332,7 +338,7 @@ pending. Server field errors show under the matching field. Status messages use
 - **Unit tests:** `todo-access.policy`, TipTap validator (rejects `javascript:` links
   and unknown nodes; accepts empty doc), last-owner rule.
 - Tests run one process at a time. A "passed" claim needs the command output.
-- Frontend: `tsc --noEmit` and `next lint` must pass; no automated UI tests (scope).
+- Frontend: `tsc --noEmit` and `npm run lint` (ESLint; Next 16 removed `next lint`) must pass; no automated UI tests (scope).
 
 ## 10. Milestones (time budget ≈ 60 h)
 
@@ -409,3 +415,6 @@ switching stacks, unless the bug blocks its own "done when".
 | 2026-10-11 | Plan created               | M0     |
 | 2026-10-11 | Added §10.1 session boundaries and §10.2 context budget | User rules |
 | 2026-10-11 | §7: backend pinned to NestJS 11 / TypeORM 0.3 / TS 5.9; dev tools listed | NestJS 12 is ESM-only (user decision) |
+| 2026-10-11 | §2: `frontend/src/middleware.ts` → `frontend/src/proxy.ts` | Next.js 16 renamed the convention (checked in the installed docs) |
+| 2026-10-11 | §2/§4.1: `frontend/server.mjs` custom server sets X-Forwarded-For from the socket | Next.js keeps a client-sent X-Forwarded-For, which would bypass the login rate limit (user decision, S5) |
+| 2026-10-11 | §7: frontend dev tools listed; versions recorded. §9: `next lint` → `npm run lint` | S5 scaffold; Next 16 has no `next lint` |
