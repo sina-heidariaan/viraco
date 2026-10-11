@@ -1,5 +1,6 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseUUIDPipe, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Patch, Post, Query } from '@nestjs/common';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
+import { UuidParam } from '../../common/decorators/uuid-param.decorator';
 import { AuthUser } from '../auth/auth-user';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { ListTodosQueryDto } from './dto/list-todos.query';
@@ -23,14 +24,14 @@ export class TodosController {
   }
 
   @Get(':id')
-  findOne(@CurrentUser() user: AuthUser, @Param('id', ParseUUIDPipe) id: string): Promise<TodoResponse> {
+  findOne(@CurrentUser() user: AuthUser, @UuidParam('id') id: string): Promise<TodoResponse> {
     return this.todos.findOne(user, id);
   }
 
   @Patch(':id')
   update(
     @CurrentUser() user: AuthUser,
-    @Param('id', ParseUUIDPipe) id: string,
+    @UuidParam('id') id: string,
     @Body() dto: UpdateTodoDto,
   ): Promise<TodoResponse> {
     return this.todos.update(user, id, dto);
@@ -38,7 +39,7 @@ export class TodosController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@CurrentUser() user: AuthUser, @Param('id', ParseUUIDPipe) id: string): Promise<void> {
+  remove(@CurrentUser() user: AuthUser, @UuidParam('id') id: string): Promise<void> {
     return this.todos.remove(user, id);
   }
 }

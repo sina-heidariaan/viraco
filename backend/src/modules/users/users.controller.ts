@@ -1,5 +1,6 @@
-import { Body, Controller, Get, Param, ParseUUIDPipe, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post } from '@nestjs/common';
 import { Roles } from '../../common/decorators/roles.decorator';
+import { UuidParam } from '../../common/decorators/uuid-param.decorator';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Role } from './role.enum';
@@ -30,7 +31,7 @@ export class UsersController {
 
   @Patch(':id')
   @Roles(Role.Owner)
-  update(@Param('id', ParseUUIDPipe) id: string, @Body() dto: UpdateUserDto): Promise<UserResponse> {
+  update(@UuidParam('id') id: string, @Body() dto: UpdateUserDto): Promise<UserResponse> {
     return this.users.update(id, dto);
   }
 }

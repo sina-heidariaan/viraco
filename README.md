@@ -82,6 +82,25 @@ SECRET=$(node -e "console.log(require('crypto').randomBytes(48).toString('base64
 sed -i.bak "s|^JWT_ACCESS_SECRET=.*|JWT_ACCESS_SECRET=$SECRET|" backend/.env && rm backend/.env.bak
 ```
 
+> **Security warning — do not skip this step.** The placeholder is public: it is
+> in `backend/.env.example`, which is in git. With it, anyone can sign their own
+> access token for any user, including the owner, and the API accepts it. The
+> backend still starts with the placeholder (by design), but it prints a
+> `WARN [Environment] JWT_ACCESS_SECRET is the example value …` line at every start.
+
+If a backend variable is missing or invalid, the backend does not start. It prints
+one line per variable, saying whether it is missing or invalid and what to set,
+and exits with code 1 (no stack trace). Example:
+
+```text
+The backend cannot start. Fix these environment variables:
+- JWT_ACCESS_SECRET is invalid. Set it to a random string of at least 32 characters. Generate one with: node -e "…"
+```
+
+The migration commands (`npm run backend:migrate`, `migration:*`) say
+`DATABASE_URL is missing. Set it in backend/.env (copy backend/.env.example).` when
+that variable is not set.
+
 **4. Start PostgreSQL**
 
 ```bash
@@ -167,7 +186,9 @@ member does not see it.
 
 Run them one at a time.
 
-**Backend unit tests** — access policy, TipTap validator, last-owner rule:
+**Backend unit tests** — access policy, TipTap validator, last-owner rule, the
+environment messages, the nesting-depth guard, the migration CLI's `DATABASE_URL`
+check:
 
 ```bash
 npm run backend:test
@@ -183,8 +204,9 @@ npm run backend:test:e2e
 
 They cover the three tests the spec requires — a member cannot view another
 user's task, a member cannot modify users, a disabled user's old token gets 401 —
-plus cookies, refresh rotation and reuse, logout, the login rate limit and the full
-task permission matrix.
+plus cookies, refresh rotation and reuse, logout, the login rate limit, the full
+task permission matrix, 400 (not 500) for very deeply nested bodies and non-UUID
+ids, and that the app installs no PostgreSQL extension outside the migrations.
 
 **Backend type check:**
 
@@ -314,6 +336,12 @@ and the list of human decisions: **[docs/ai-workflow.md](docs/ai-workflow.md)**.
 
 **Known gaps and behaviour worth knowing:**
 
+- The backend **starts even with the example JWT secret** from
+  `backend/.env.example` and only logs a warning (S7 review F2; the user chose a
+  warning, not a block). With that secret, anyone can sign tokens as any user.
+  Always set your own secret (setup step 3).
+- A request body nested more than 64 levels deep (objects and arrays) is refused
+  with 400 before validation. A valid task description is at most 43 levels.
 - Users cannot be deleted, only disabled. This keeps task history intact.
 - Changing an owner's own role logs that owner out (their token version changes).
 - Expired and revoked rows in `refresh_tokens` are never cleaned up.

@@ -55,7 +55,8 @@ flowchart LR
   `RolesGuard` are registered as global guards; routes opt out with `@Public()`
   (login, refresh, logout only).
 - **Inside NestJS:** controller (HTTP + DTO) → service (rules + transactions) →
-  TypeORM. A global `ValidationPipe` rejects unknown fields; `AllExceptionsFilter`
+  TypeORM. A global `JsonDepthPipe` refuses bodies nested over 64 levels, then a
+  global `ValidationPipe` rejects unknown fields; `AllExceptionsFilter`
   gives every error the same shape.
 
 ## 2. Login and refresh-token rotation
@@ -221,7 +222,9 @@ erDiagram
   cannot become a **new** assignee; tasks already assigned to them keep the assignment.
 - The schema changes only through migrations. `synchronize` is `false` in
   [data-source.ts](../backend/src/config/data-source.ts), which the app, the
-  TypeORM CLI, the seed and the e2e tests all share.
+  TypeORM CLI (through [cli-data-source.ts](../backend/src/config/cli-data-source.ts)),
+  the seed and the e2e tests all share. TypeORM's own `CREATE EXTENSION` on
+  connect is turned off (`installExtensions: false`).
 
 ### The task description (TipTap JSON)
 

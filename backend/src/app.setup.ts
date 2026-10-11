@@ -3,6 +3,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import { AllExceptionsFilter, validationExceptionFactory } from './common/filters/all-exceptions.filter';
+import { JsonDepthPipe } from './common/pipes/json-depth.pipe';
 
 /** HTTP pipeline shared by main.ts and the e2e tests, so tests exercise the real setup. */
 export function configureApp(app: NestExpressApplication): void {
@@ -15,6 +16,8 @@ export function configureApp(app: NestExpressApplication): void {
   app.use(helmet());
   app.use(cookieParser());
   app.useGlobalPipes(
+    // Order matters: the depth check must run before class-transformer touches the body.
+    new JsonDepthPipe(),
     new ValidationPipe({
       whitelist: true,
       forbidNonWhitelisted: true,

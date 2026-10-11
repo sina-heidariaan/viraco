@@ -11,3 +11,5 @@
 | [2026-10-11-07](2026-10-11-07-board-users.md) | M6 | Board + URL filters, task dialogs, TipTap editor/viewer (one extension list), users page; 68/68 browser checks for 3 roles | done |
 | [2026-10-11-08](2026-10-11-08-tiptap-link-title.md) | M6 | Backend fix: TipTap link `title` accepted by the validator; tests first, 48/48 unit, API 201 | done |
 | [2026-10-11-09](2026-10-11-09-docs.md) | M7 | README, architecture.md (4 Mermaid diagrams), ai-workflow.md, video script; clean clone reaches login; 48 unit + 49 e2e pass; 93/93 browser checks | done |
+| [2026-10-11-10](2026-10-11-10-review-fix-plan.md) | — | Manual test scenarios (48), env check, spec + code review, fix plan F1–F11 (handoff) | handoff |
+| [2026-10-11-11](2026-10-11-11-backend-fixes.md) | — | S8a backend fixes F2 (warning), F3, F6, F8, F9, F11; tests first; unit 64/64, e2e 58/58, typecheck + build; MT-A2 clean messages | done |

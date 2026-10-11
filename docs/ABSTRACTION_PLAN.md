@@ -421,3 +421,4 @@ switching stacks, unless the bug blocks its own "done when".
 | 2026-10-11 | §2/§4.1: `frontend/server.mjs` custom server sets X-Forwarded-For from the socket | Next.js keeps a client-sent X-Forwarded-For, which would bypass the login rate limit (user decision, S5) |
 | 2026-10-11 | §7: frontend dev tools listed; versions recorded. §9: `next lint` → `npm run lint` | S5 scaffold; Next 16 has no `next lint` |
 | 2026-10-11 | §7: TipTap 3.31 recorded; `@tiptap/extension-link` not installed | StarterKit 3 includes Link (checked with `npm view`, S6) |
+| 2026-10-11 | New folder `backend/src/common/pipes/` (`JsonDepthPipe`, global, before `ValidationPipe`); new `backend/src/config/cli-data-source.ts` for the TypeORM CLI | S7 review F3: a deeply nested body crashed class-transformer (500); F6: clear `DATABASE_URL` message in the CLI (user approved, S8a) |

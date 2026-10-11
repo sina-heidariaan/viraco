@@ -12,6 +12,8 @@ export default async function globalSetup(): Promise<void> {
   await dataSource.initialize();
   try {
     await dataSource.dropDatabase();
+    // Start without extensions, so a test can prove the app never installs one itself.
+    await dataSource.query('DROP EXTENSION IF EXISTS pgcrypto');
     await dataSource.runMigrations({ transaction: 'all' });
   } finally {
     await dataSource.destroy();
