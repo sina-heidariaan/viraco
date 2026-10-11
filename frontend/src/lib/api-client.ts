@@ -124,12 +124,20 @@ export function describeError(err: unknown): string {
 }
 
 /**
- * Field errors from a 400 `details` list, keyed by field. `messages` gives the Persian
- * sentence per field; a field without one keeps the server's text.
+ * Field errors from a 400 `details` list, keyed by field, with the Persian sentence from
+ * `messages`. Only the fields in `messages` are kept, because the form shows nothing for
+ * the others; when any other field was rejected, `otherError` is a form-level sentence.
  */
-export function fieldErrors(err: unknown, messages: Record<string, string>): Record<string, string> {
-  const result: Record<string, string> = {};
-  if (!(err instanceof ApiError) || err.status !== 400) return result;
-  for (const { field, message } of err.details) result[field] ??= messages[field] ?? message;
-  return result;
+export function fieldErrors(
+  err: unknown,
+  messages: Record<string, string>,
+): { fields: Record<string, string>; otherError: string | null } {
+  const fields: Record<string, string> = {};
+  let other = false;
+  if (!(err instanceof ApiError) || err.status !== 400) return { fields, otherError: null };
+  for (const { field } of err.details) {
+    if (Object.hasOwn(messages, field)) fields[field] = messages[field];
+    else other = true;
+  }
+  return { fields, otherError: other ? 'اطلاعات فرم پذیرفته نشد. دوباره تلاش کنید.' : null };
 }

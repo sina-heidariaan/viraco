@@ -116,6 +116,7 @@ drift more than once.
    environment, including tests.
 6. **No abstraction without a second use.** No generic base services, no CQRS, no
    event bus, no shared "core" package.
+7. **Decision (user, 2026-10-11):** Rejected as over-engineering: repository or interface layers, base DTOs, data or form libraries, an i18n framework, and an event bus.
 
 ## 4. Fixed contracts
 

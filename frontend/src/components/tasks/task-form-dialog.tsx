@@ -184,7 +184,8 @@ function TaskForm({ task, assignees, pending, setPending, onCancel, onSaved, onM
         onMissing();
         return;
       }
-      if (!showErrors(fieldErrors(err, SERVER_FIELD_MESSAGES))) setFormError(describeError(err));
+      const { fields, otherError } = fieldErrors(err, SERVER_FIELD_MESSAGES);
+      if (!showErrors(fields) || otherError) setFormError(otherError ?? describeError(err));
     }
   }
 

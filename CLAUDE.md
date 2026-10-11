@@ -41,6 +41,7 @@ Applies to every AI agent working in this repository (Claude Code, Cursor, Codex
 - Do not claim "passed" or "done" without the command output that proves it.
 - Spec gap? Pick the most reversible option, add it to plan §12 as an assumption, tell the user.
 - Avoid over-engineering: no generic base classes, no extra layers, no features outside plan §1.
+  Rejected as over-engineering: repository or interface layers, base DTOs, data or form libraries, an i18n framework, and an event bus.
 
 ## Session log
 

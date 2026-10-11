@@ -140,7 +140,8 @@ function UserForm({ user, pending, setPending, onCancel, onSaved }: UserFormProp
         setFormError('این کاربر پیدا نشد. صفحه را دوباره بارگذاری کنید.');
         return;
       }
-      if (!showErrors(fieldErrors(err, SERVER_FIELD_MESSAGES))) setFormError(describeError(err));
+      const { fields, otherError } = fieldErrors(err, SERVER_FIELD_MESSAGES);
+      if (!showErrors(fields) || otherError) setFormError(otherError ?? describeError(err));
     }
   }
 

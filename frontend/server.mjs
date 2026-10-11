@@ -21,6 +21,13 @@ const app = next({ dev: !production, hostname, port });
 const handle = app.getRequestHandler();
 await app.prepare();
 
+// Next.js loads frontend/.env during prepare(), so the check must come after it.
+// Without a valid BACKEND_URL every API call would fail later with a 502.
+if (!isHttpUrl(process.env.BACKEND_URL)) {
+  console.error('BACKEND_URL is missing or invalid. Set it in frontend/.env (copy frontend/.env.example).');
+  process.exit(1);
+}
+
 createServer((req, res) => {
   // Trust only the socket. A reverse proxy placed in front later needs its own trusted-hop rule.
   const ip = req.socket.remoteAddress;
@@ -30,3 +37,12 @@ createServer((req, res) => {
 }).listen(port, hostname, () => {
   console.log(`> Frontend on http://${hostname}:${port} (${process.env.NODE_ENV})`);
 });
+
+function isHttpUrl(value) {
+  try {
+    const { protocol } = new URL(value ?? '');
+    return protocol === 'http:' || protocol === 'https:';
+  } catch {
+    return false;
+  }
+}

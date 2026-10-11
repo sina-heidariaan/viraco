@@ -217,6 +217,13 @@ function LinkRow({ editor, hasLink, onDone }: { editor: Editor; hasLink: boolean
       event.preventDefault();
       apply();
     }
+    // Escape closes only this row; without stopPropagation the task dialog closes too.
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      event.stopPropagation();
+      editor.commands.focus();
+      onDone();
+    }
   }
 
   return (

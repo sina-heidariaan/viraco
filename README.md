@@ -101,6 +101,11 @@ The migration commands (`npm run backend:migrate`, `migration:*`) say
 `DATABASE_URL is missing. Set it in backend/.env (copy backend/.env.example).` when
 that variable is not set.
 
+The frontend does not start without a valid `BACKEND_URL` (an `http://` or
+`https://` address). It prints
+`BACKEND_URL is missing or invalid. Set it in frontend/.env (copy frontend/.env.example).`
+and exits with code 1.
+
 **4. Start PostgreSQL**
 
 ```bash
@@ -273,6 +278,7 @@ Main decisions:
    the editor and the read-only viewer.
 8. **Separate apps, no shared package.** `backend/` and `frontend/` each have their
    own `package.json` and lockfile. The frontend mirrors the API types it needs.
+9. **No extra layers.** Rejected as over-engineering: repository or interface layers, base DTOs, data or form libraries, an i18n framework, and an event bus.
 
 ## Permission matrix
 
@@ -342,6 +348,11 @@ and the list of human decisions: **[docs/ai-workflow.md](docs/ai-workflow.md)**.
   Always set your own secret (setup step 3).
 - A request body nested more than 64 levels deep (objects and arrays) is refused
   with 400 before validation. A valid task description is at most 43 levels.
+- Pressing Escape **inside the description editor** does not close the task
+  dialog; Escape in any other field does. Escape in the editor's link row closes
+  only that row.
+- An unknown address shows a Persian "page not found" screen. A signed-out visitor
+  is sent to the login page first, like every other page.
 - Users cannot be deleted, only disabled. This keeps task history intact.
 - Changing an owner's own role logs that owner out (their token version changes).
 - Expired and revoked rows in `refresh_tokens` are never cleaned up.

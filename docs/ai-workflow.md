@@ -133,6 +133,7 @@ human's:
 | 2026-10-11 | AS1: a member may edit tasks assigned to them by someone else (except the assignee) | Plan §12 |
 | 2026-10-11 | NestJS 11 / TypeORM 0.3 / TypeScript 5.9 instead of NestJS 12 (ESM-only) | Plan §7, §13 |
 | 2026-10-11 | A custom Next.js server sets `X-Forwarded-For` from the socket, instead of accepting a spoofable header | Plan §4.1, §13; log 06 |
+| 2026-10-11 | Rejected as over-engineering: repository or interface layers, base DTOs, data or form libraries, an i18n framework, and an event bus. | Plan §3, log 10 |
 | 2026-10-11 | The scope of each session, including this documentation session and its "done" test (a clean clone reaches a working login) | The session prompts |
 
 Smaller choices were made by the AI as **rulings** and written in the session

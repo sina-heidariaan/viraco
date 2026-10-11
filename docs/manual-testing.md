@@ -5,7 +5,7 @@ an ID, the steps, and the expected result. Tick them off in the
 [checklist](#checklist) at the end.
 
 Facts about the app (texts, counts, status codes) were taken from the code and from
-the S7 headless-browser run (93/93 checks) on a fresh seed.
+the S7 headless-browser run (93/93 checks) on a fresh seed, rerun in S8b (93/93).
 
 ## Before you start
 
@@ -93,9 +93,6 @@ member's `id`.
   - Line 3: `JWT_ACCESS_SECRET is invalid. Set it to a random string of at least 32
     characters. Generate one with: node -e …`
   - Line 4: `COOKIE_SECURE must be true when NODE_ENV=production. …`
-- Known gap (fixed in the frontend session S8b): a missing `BACKEND_URL` does not
-  stop the frontend (each API call returns 502 instead).
-
 ### MT-A3 — Warning for the example JWT secret
 - Stop the backend. In `backend/.env`, set
   `JWT_ACCESS_SECRET=replace-with-a-random-string-of-at-least-32-characters`
@@ -129,6 +126,20 @@ npm run migration:show                   # normal
   `pgcrypto` and `uuid-ossp`; the app no longer adds them, and they do no harm.)
 
 ---
+
+### MT-A6 — Frontend refuses to start without a valid `BACKEND_URL`
+- Stop the frontend. In `frontend/`, run each line:
+
+  ```bash
+  mv .env .env.off; node server.mjs; echo "exit $?"; mv .env.off .env
+  BACKEND_URL=ftp://127.0.0.1:4000 node server.mjs; echo "exit $?"
+  BACKEND_URL=not-a-url node server.mjs; echo "exit $?"
+  node server.mjs
+  ```
+
+- **Expected:** the first three print
+  `BACKEND_URL is missing or invalid. Set it in frontend/.env (copy frontend/.env.example).`
+  and `exit 1`. The last one starts normally (`> Frontend on http://127.0.0.1:3000`).
 
 ## B. Sign-in and session
 
@@ -182,6 +193,16 @@ login member Member@12345   # sign in again for the next scenarios
 - **Expected:** `200`, `401`, `401`, then the member's JSON.
 
 ---
+
+### MT-B10 — `?next=` cannot send you to another site
+- Signed in as any user, open each address:
+  - `http://127.0.0.1:3000/login?next=%2F%09%2Fexample.com` (a tab after the first `/`)
+  - `http://127.0.0.1:3000/login?next=%2F%0A%2Fexample.com` (a newline)
+  - `http://127.0.0.1:3000/login?next=%2F.%2F%2Fexample.com` (`/.//example.com`)
+  - `http://127.0.0.1:3000/login?next=https%3A%2F%2Fexample.com`
+- **Expected:** every one ends on `http://127.0.0.1:3000/tasks`, never on example.com.
+- Open `http://127.0.0.1:3000/login?next=%2Ftasks%3Fstatus%3Ddone`. **Expected:** you
+  land on `/tasks?status=done` (a normal path, with its query, is kept).
 
 ## C. Tasks as the owner
 
@@ -247,6 +268,13 @@ login member Member@12345   # sign in again for the next scenarios
 ### MT-D2 — Unsafe link refused in the editor
 - «پیوند» → `javascript:alert(1)` → Enter.
 - **Expected:** a message starting «فقط نشانی‌هایی که با http…»; no link is added.
+
+### MT-D7 — Escape in the link row keeps the dialog
+- «کار جدید» → type a title → in the editor click «پیوند» → type `example.com`
+  → press Escape.
+- **Expected:** only the link row closes. The dialog stays open, the title is still
+  there, and the cursor is back in the editor. No link is added.
+- Click the title field and press Escape. **Expected:** the dialog closes (as before).
 
 ### MT-D3 — Stored as JSON, not HTML
 - DevTools → Network → save a task → the `todos` request → Payload.
@@ -447,6 +475,33 @@ curl -s -b owner.txt -X PATCH -H 'Content-Type: application/json' -d '{}' $API/u
 - **Expected:** both
   `{"statusCode":400,"error":"Bad Request","message":"Validation failed","details":[{"field":"id","message":"id must be a UUID"}]}`.
 
+### MT-I5 — Persian 404 and error pages
+- Signed in, open <http://127.0.0.1:3000/no-such-page>.
+- **Expected:** «این صفحه پیدا نشد.» and a «رفتن به تخته کارها» button that opens
+  `/tasks`. No English "This page could not be found".
+- Error page (fakes a broken API answer): open `/tasks`, paste this into the
+  DevTools console, then pick «وضعیت» = «انجام‌شده» (do not reload; a reload removes
+  the fake):
+
+  ```js
+  const realFetch = window.fetch; window.fetch = (url, init) => String(url).includes('/api/v1/todos?') ? Promise.resolve(new Response('{}', { headers: { 'Content-Type': 'application/json' } })) : realFetch(url, init);
+  ```
+
+- **Expected:** «این صفحه نمایش داده نشد.» with a «تلاش دوباره» button, in Persian
+  and right-to-left. Reload the page: the board is back.
+
+### MT-I6 — A server error on a field the form does not show
+- Every field the API checks has a place in the forms, so this needs a fake answer.
+  Open `/tasks`, paste this into the DevTools console, then «کار جدید» → any title
+  → «ساخت کار»:
+
+  ```js
+  const realFetch = window.fetch; window.fetch = (url, init) => String(url).endsWith('/api/v1/todos') && init?.method === 'POST' ? Promise.resolve(new Response('{"statusCode":400,"error":"Bad Request","message":"Validation failed","details":[{"field":"foo","message":"foo is bad"}]}', { status: 400, headers: { 'Content-Type': 'application/json' } })) : realFetch(url, init);
+  ```
+
+- **Expected:** the dialog stays open and shows «اطلاعات فرم پذیرفته نشد. دوباره
+  تلاش کنید.»; the button works again. Reload the page to remove the fake.
+
 ---
 
 ## J. Automated tests
@@ -474,6 +529,7 @@ cd frontend && npm run typecheck && npm run lint && npm run build
 | A3 | Warning for the example JWT secret | |
 | A4 | Migration command without DATABASE_URL | |
 | A5 | No PostgreSQL extension installed | |
+| A6 | Bad BACKEND_URL stops the frontend | |
 | B1 | Pages need a session | |
 | B2 | Empty login form | |
 | B3 | Same error for wrong password and unknown email | |
@@ -483,6 +539,7 @@ cd frontend && npm run typecheck && npm run lint && npm run build
 | B7 | Silent token renewal | |
 | B8 | Logout | |
 | B9 | Stolen refresh token (API) | |
+| B10 | ?next= stays on this site | |
 | C1 | Board | |
 | C2 | Create with every field | |
 | C3 | Title required | |
@@ -498,6 +555,7 @@ cd frontend && npm run typecheck && npm run lint && npm run build
 | D4 | Empty description | |
 | D5 | Server validates the JSON (API) | |
 | D6 | Deeply nested body is a 400 (API) | |
+| D7 | Escape in the link row keeps the dialog | |
 | E1 | Users page | |
 | E2 | Create user, field errors | |
 | E3 | Change a role | |
@@ -520,5 +578,7 @@ cd frontend && npm run typecheck && npm run lint && npm run build
 | I2 | Cross-site request blocked (API) | |
 | I3 | No backend URL in the browser | |
 | I4 | Non-UUID id names the field (API) | |
+| I5 | Persian 404 and error pages | |
+| I6 | Unknown server field error | |
 | J1 | Backend tests | |
 | J2 | Frontend checks | |

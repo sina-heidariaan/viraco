@@ -15,12 +15,23 @@ const SERVER_FIELD_MESSAGES: Record<Field, string> = {
   password: 'رمز عبور معتبر نیست.',
 };
 
-/** Only paths on this site, so ?next= cannot send the user somewhere else. */
+/**
+ * Only paths on this site, so ?next= cannot send the user somewhere else. The URL parser
+ * applies the browser's own rules (it drops tabs and newlines, reads `\` as `/`), so
+ * prefix checks cannot be fooled. Runs during render on the server too: no `window`.
+ */
 function safeNext(raw: string | null): string {
-  if (!raw || !raw.startsWith('/') || raw.startsWith('//') || raw.startsWith('/\\') || raw.startsWith('/login')) {
+  const base = 'http://local';
+  try {
+    const url = new URL(raw ?? '', base);
+    // `/.//evil.com` parses to the path `//evil.com`, which the browser reads as a host.
+    if (!raw || url.origin !== base || url.pathname.startsWith('//') || url.pathname.startsWith('/login')) {
+      return '/tasks';
+    }
+    return url.pathname + url.search + url.hash;
+  } catch {
     return '/tasks';
   }
-  return raw;
 }
 
 export function LoginForm() {
@@ -84,10 +95,12 @@ export function LoginForm() {
       await api<AuthUser>('/auth/login', { method: 'POST', json: { email, password } });
       router.replace(next); // stays pending until the next page renders
     } catch (err) {
-      if (!showFieldErrors(fieldErrors(err, SERVER_FIELD_MESSAGES))) {
+      const { fields, otherError } = fieldErrors(err, SERVER_FIELD_MESSAGES);
+      if (!showFieldErrors(fields) || otherError) {
         // One sentence for wrong email, wrong password and disabled account alike (plan §5.2).
         setFormError(
-          err instanceof ApiError && err.status === 401 ? 'ایمیل یا رمز عبور درست نیست.' : describeError(err),
+          otherError ??
+            (err instanceof ApiError && err.status === 401 ? 'ایمیل یا رمز عبور درست نیست.' : describeError(err)),
         );
       }
       setPending(false);
