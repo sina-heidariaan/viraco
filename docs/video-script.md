@@ -1,12 +1,25 @@
 # Demo video script
 
-A Persian screen recording of **at most 5 minutes** (spec: "Project Demonstration
-Video"). The spec asks it to show: project overview, architecture,
-frontend/backend structure, the authentication and authorization flow, the task
-workflow, the TipTap JSON implementation, and important technical decisions.
+A screen recording of **at most 5 minutes** (spec: "Project Demonstration
+Video"), narrated in English. The spec asks it to show: project overview,
+architecture, frontend/backend structure, the authentication and authorization
+flow, the task workflow, the TipTap JSON implementation, and important technical
+decisions.
 
-Target length: about 4 min 40 s. Screen directions are in English; the narration
-(right column) is in Persian, to be read aloud.
+Target length: about 4 min 45 s (about 650 spoken words at a normal pace). Screen
+directions and narration are in English. The app itself is Persian, so labels on
+screen are Persian; the English meaning is in parentheses.
+
+| Spec topic | Scenes |
+| ---------- | ------ |
+| Project overview | 1 |
+| Architecture | 2 |
+| Frontend/backend structure | 3 |
+| Authentication flow | 4 |
+| Task workflow | 5 |
+| TipTap JSON implementation | 6 |
+| Authorization flow | 7, 8, 9 |
+| Important technical decisions | 10 (and 2, 4, 6, 9 as they come up) |
 
 ## Before recording
 
@@ -16,27 +29,27 @@ Target length: about 4 min 40 s. Screen directions are in English; the narration
    the backend and frontend ([README](../README.md#setup-from-a-clean-clone)).
 2. Run `npm run backend:test:e2e` once in a terminal and leave the summary on screen
    (it takes about a minute — do not run it during the recording).
-3. As the owner, open the task "بازبینی نقش کاربران" and copy its URL
-   (`/tasks/<id>`). The member cannot see this task; it is used in scene 8.
+3. As the owner, open the task «بازبینی نقش کاربران» ("Review user roles") and copy
+   its URL (`/tasks/<id>`). The member cannot see this task; it is used in scene 9.
 4. Open in tabs: the GitHub page of the repository (README),
    [architecture.md](architecture.md) on GitHub, VS Code with the repository, and
    <http://127.0.0.1:3000/login>. Browser zoom 110–125 %, DevTools closed.
-5. Log out before each role change (header → خروج).
+5. Log out before each role change (header → «خروج», "Log out").
 
 ## Scenes
 
-| # | Time | On screen | Narration (Persian) |
+| # | Time | On screen | Narration (English) |
 | - | ---- | --------- | ------------------- |
-| 1 | 0:00–0:20 | GitHub README: title, stack table | سلام. این پروژه یک تخته‌ی مدیریت کار برای تیم است، با رابط فارسی و راست‌به‌چپ. فرانت‌اند با Next.js و بک‌اند با NestJS و PostgreSQL ساخته شده. سه نقش داریم: مالک، مدیر و عضو؛ و همه‌ی دسترسی‌ها در خود API کنترل می‌شود، نه با پنهان کردن دکمه‌ها. |
-| 2 | 0:20–0:55 | architecture.md, diagram 1 (components) | مرورگر فقط با Next.js حرف می‌زند. همه‌ی درخواست‌ها به ‎/api/v1‎ می‌روند و یک route در Next.js آن‌ها را با کوکی‌ها به NestJS می‌فرستد؛ آدرس بک‌اند فقط سمت سرور است و CORS در NestJS خاموش است. یک سرور سفارشی هم داریم، server.mjs، که IP واقعی کاربر را از خود اتصال TCP می‌خواند؛ چون محدودیت ورود، یعنی پنج تلاش در دقیقه، روی همین IP است و Next.js به‌تنهایی هدر جعلی را نگه می‌دارد. |
-| 3 | 0:55–1:15 | VS Code explorer: expand `backend/src/modules`, `common/guards`, then `frontend/src/app`, `components`, `lib` | ساختار مونو‌ریپو: پوشه‌ی backend و frontend هر کدام package و lockfile خودشان را دارند و هیچ کد مشترکی ندارند. در بک‌اند سه ماژول auth، users و todos داریم و دو guard سراسری. در فرانت‌اند صفحه‌ها، کامپوننت‌ها و کلاینت API جدا هستند. طرح کلی پروژه در ABSTRACTION_PLAN نوشته شده. |
-| 4 | 1:15–1:55 | Login as `owner@taskboard.local` / `Owner@12345`. Open DevTools → Application → Cookies: point at HttpOnly and the Path of `refresh_token`. Then architecture.md, diagram 2 | ورود با مالک. دو کوکی ساخته می‌شود، هر دو HttpOnly، پس جاوااسکریپت به آن‌ها دسترسی ندارد. توکن دسترسی یک JWT پانزده‌دقیقه‌ای است. توکن تازه‌سازی یک رشته‌ی تصادفی هفت‌روزه است که فقط هش آن در دیتابیس ذخیره می‌شود و مسیرش فقط ‎/api/v1/auth‎ است. با هر تازه‌سازی، توکن عوض می‌شود؛ و اگر یک توکن قدیمی دوباره استفاده شود، همه‌ی نشست‌های آن کاربر باطل می‌شود. |
-| 5 | 1:55–2:45 | Board. Status filter → «در حال انجام» (point at the URL), assignee filter, then «پاک کردن فیلترها». Create a task: title, priority, assignee, due date; in the editor a heading, **bold**, a bullet list and a link. Save, open the new task (read-only view). Edit → change status to «انجام‌شده». Delete it → confirm dialog | این تخته‌ی کارهاست: سه ستون برای سه وضعیت. فیلتر وضعیت و مسئول در آدرس صفحه ذخیره می‌شود، پس رفرش و دکمه‌ی برگشت کار می‌کنند. حالا یک کار جدید می‌سازم: عنوان، اولویت، مسئول، تاریخ سررسید که به شمسی نمایش داده می‌شود، و توضیحات با ویرایشگر TipTap: تیتر، متن پررنگ، فهرست و لینک. فرم‌ها و تأیید حذف همه Dialog از Headless UI هستند و انتخاب‌ها Listbox؛ با کیبورد هم کار می‌کنند. ویرایش وضعیت… و حذف با تأیید. |
-| 6 | 2:45–3:15 | Create one more task with a description (leave «مسئول» as «بدون مسئول»); DevTools → Network → the POST request payload (`description` JSON). Then VS Code: `tiptap.validator.ts` (allowlist at the top) and `tiptap-extensions.ts` | توضیحات به‌صورت JSON خود TipTap ذخیره می‌شود، در ستون jsonb؛ HTML هیچ‌جا منبع داده نیست. در بک‌اند یک validator درخت JSON را پیمایش می‌کند و فقط گره‌ها و علامت‌های مجاز را قبول می‌کند؛ لینک فقط http و https، و عمق و حجم هم محدود است. در فرانت‌اند یک فهرست افزونه‌ی واحد داریم که هم ویرایشگر و هم نمایش فقط‌خواندنی از آن استفاده می‌کنند، پس همان JSON در هر دو یکسان نمایش داده می‌شود. |
-| 7 | 3:15–3:45 | Header → «کاربران». Create a user (role «عضو»). Row menu → disable → confirm. Then try to disable the owner's own row → the 409 message | صفحه‌ی کاربران فقط برای مالک است. کاربر جدید می‌سازم و بعد غیرفعالش می‌کنم. غیرفعال کردن، شماره‌ی نسخه‌ی توکن کاربر را بالا می‌برد و توکن‌های تازه‌سازی‌اش را باطل می‌کند، پس نشست قبلی‌اش در همان درخواست بعدی از کار می‌افتد. اگر بخواهم آخرین مالک فعال را غیرفعال کنم، سرور اجازه نمی‌دهد. |
-| 8 | 3:45–4:05 | Log out. Log in as `manager@taskboard.local` / `Manager@12345`. Board shows all tasks; no «کاربران» link. Type `/users` in the address bar → forbidden state | مدیر همه‌ی کارها را می‌بیند و می‌تواند هر کاری را بسازد، ویرایش کند، حذف کند و به هر کسی بسپارد؛ ولی مدیریت کاربران ندارد. اگر آدرس را دستی بزنم، صفحه پیام «دسترسی ندارید» نشان می‌دهد؛ و این فقط ظاهر است: خود API هم درخواست مدیر به ‎/users‎ را با ۴۰۳ رد می‌کند. |
-| 9 | 4:05–4:30 | Log out. Log in as `member@taskboard.local` / `Member@12345`. Board shows 3 tasks. Open «نوشتن تست‌های دسترسی»: no delete button, assignee locked. Paste the owner task URL from step 3 → «not found» state | عضو فقط کارهایی را می‌بیند که خودش ساخته یا به او سپرده شده؛ این فیلتر داخل خود کوئری SQL است، نه بعد از خواندن داده. کاری که مدیر به او سپرده را می‌تواند ویرایش کند، ولی نمی‌تواند مسئولش را عوض کند یا حذفش کند. اگر آدرس کار شخص دیگری را باز کند، سرور ۴۰۴ می‌دهد تا حتی وجود آن کار هم معلوم نشود. |
-| 10 | 4:30–4:50 | Terminal with the e2e summary; then `docs/ai-workflow.md` on GitHub | این قوانین با تست‌های e2e روی یک دیتابیس واقعی بررسی می‌شوند، از جمله سه تست خواسته‌شده: عضو کار دیگران را نمی‌بیند، عضو نمی‌تواند کاربران را تغییر دهد، و توکن قدیمی کاربر غیرفعال کار نمی‌کند. پروژه با Claude Code و بر اساس یک طرح مکتوب، قوانین پروژه و جلسه‌های ثبت‌شده ساخته شد؛ تصمیم‌های معماری و امنیتی با من بود. جزئیات در README و پوشه‌ی docs است. ممنون. |
+| 1 | 0:00–0:20 | GitHub README: title, stack table | Hi. This is a task board for a team, with a Persian, right-to-left interface. The frontend is Next.js, the backend is NestJS, and the database is PostgreSQL. There are three roles: owner, manager and member. Every permission is enforced in the API itself, not by hiding buttons. |
+| 2 | 0:20–0:50 | architecture.md, diagram 1 (components) | The browser only talks to Next.js. Every request goes to `/api/v1`, and one Next.js route forwards it to NestJS together with the cookies. The backend address exists only on the server, and CORS is off in NestJS. A small custom server, `server.mjs`, reads the real client IP from the TCP connection. The login limit, five tries per minute, is keyed on that IP, and plain Next.js would keep a forged header. |
+| 3 | 0:50–1:12 | VS Code explorer: expand `backend/src/modules`, `common/guards`, then `frontend/src/app`, `components`, `lib` | This is a monorepo with two separate apps. Backend and frontend each have their own package and lockfile, and share no code. The backend has three modules, auth, users and todos, plus two global guards. The frontend keeps pages, components and the API client apart. The full design is written in the abstraction plan. |
+| 4 | 1:12–1:50 | Login as `owner@taskboard.local` / `Owner@12345`. Open DevTools → Application → Cookies: point at HttpOnly and the Path of `refresh_token`. Then architecture.md, diagram 2 | I sign in as the owner. Two cookies are created, both HttpOnly, so JavaScript cannot read them. The access token is a fifteen-minute JWT. The refresh token is a random seven-day string; only its hash is stored in the database, and its path is limited to `/api/v1/auth`. Every refresh replaces the token, and if an old token is used again, all sessions of that user are revoked. |
+| 5 | 1:50–2:30 | Board. Status filter → «در حال انجام» ("In progress"; point at the URL), assignee filter, then «پاک کردن فیلترها» ("Clear filters"). Create a task: title, priority, assignee, due date; in the editor a heading, **bold**, a bullet list and a link. Save, open the new task (read-only view). Edit → change status to «انجام‌شده» ("Done"). Delete it → confirm dialog | This is the board: three columns for three statuses. The status and assignee filters are saved in the page URL, so refresh and the back button work. Now I create a task: title, priority, assignee, a due date shown in the Jalali calendar, and a description in the TipTap editor, with a heading, bold text, a list and a link. I save it and open it. Then I edit it, move it to done, and delete it after a confirmation. |
+| 6 | 2:30–3:00 | Create one more task with a description (leave «مسئول» ("Assignee") as «بدون مسئول» ("No assignee")); DevTools → Network → the POST request payload (`description` JSON). Then VS Code: `tiptap.validator.ts` (allowlist at the top) and `tiptap-extensions.ts` | The description is stored as TipTap's own JSON, in a `jsonb` column. HTML is never a source of data. In the backend, a validator walks the JSON tree and accepts only allowed nodes and marks. Links must be http or https, and depth and size are limited. In the frontend, one extension list is used by both the editor and the read-only view, so the same JSON looks the same in both. |
+| 7 | 3:00–3:22 | Header → «کاربران» ("Users"). Create a user (role «عضو», "Member"). Row menu → disable → confirm. Then try to disable the owner's own row → the 409 message | Now authorization. The users page is for the owner only. I create a member and then disable them. Disabling raises the user's token version and revokes their refresh tokens, so their session stops working on the very next request. The last active owner cannot be disabled; the server answers 409. |
+| 8 | 3:22–3:40 | Log out. Log in as `manager@taskboard.local` / `Manager@12345`. Board shows all tasks; no «کاربران» link. Type `/users` in the address bar → forbidden state | The manager sees every task and can create, edit, delete and assign any of them, but has no user management. If I type `/users`, the page shows a "no access" message. That is only cosmetic: the API itself answers the manager with 403. |
+| 9 | 3:40–4:05 | Log out. Log in as `member@taskboard.local` / `Member@12345`. Board shows 3 tasks. Open «نوشتن تست‌های دسترسی» ("Write access tests"): no delete button, assignee locked. Paste the owner task URL from step 3 of "Before recording" → "not found" state | The member sees only tasks they created or that are assigned to them. This filter is inside the SQL query, not applied after loading. A task assigned by a manager can be edited, but its assignee cannot be changed and it cannot be deleted. If the member opens someone else's task URL, the server answers 404, so even its existence stays hidden. |
+| 10 | 4:05–4:45 | README "Architecture → Main decisions"; then the terminal with the e2e summary; then `docs/ai-workflow.md` on GitHub | The important decisions: authorization lives in two places only, a roles guard and one row-level policy. Tokens exist only in HttpOnly cookies. The schema changes only through migrations. TipTap JSON, not HTML, is the source of truth. There are no extra layers. These rules are checked by end-to-end tests on a real database, including the three required ones: a member cannot see other people's tasks, a member cannot change users, and a disabled user's old token stops working. The project was built with Claude Code under a written plan and session logs; the architecture and security decisions were mine. Thank you. |
 
 ## Checks after recording
 
